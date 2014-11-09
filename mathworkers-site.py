@@ -1,5 +1,5 @@
 """
-The back-end app for mathworkersjs.org
+The back-end app for http://mathworkersjs.org
 """
 __author__ = 'alange'
 
@@ -10,7 +10,11 @@ app.config.from_object(__name__)
 
 @app.route('/')
 def root():
-    return render_template('index.html')
+    return render_template('root.html')
+
+@app.route('/quickstart')
+def quickstart():
+    return render_template('quickstart.html')
 
 if __name__ == '__main__':
     app.run()

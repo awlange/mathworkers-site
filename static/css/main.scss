@@ -6,14 +6,32 @@
  * Kroc Camen, and the H5BP dev community and team.
  */
 
+// ==========================================================================
+// SCSS color palette
+// ==========================================================================
+$palette-black: #22313F;
+$palette-white: #fefefe;
+$palette-light-blue: #b3d4fc;
+$palette-light-gray: #F2F1EF;
+$palette-green: #26A65B;
+
+// ==========================================================================
+// SCSS sizes
+// ==========================================================================
+$left-column-width: 15em;
+$right-column-width: 45em;
+
 /* ==========================================================================
    Base styles: opinionated defaults
    ========================================================================== */
 
 html {
-    color: #222;
+    background-color: $palette-white;
+    color: $palette-black;
     font-size: 1em;
     line-height: 1.4;
+    font-family: 'PT Sans', sans-serif;
+    font-weight: 100;
 }
 
 /*
@@ -25,12 +43,12 @@ html {
  */
 
 ::-moz-selection {
-    background: #b3d4fc;
+    background: $palette-light-blue;
     text-shadow: none;
 }
 
 ::selection {
-    background: #b3d4fc;
+    background: $palette-light-blue;
     text-shadow: none;
 }
 
@@ -42,7 +60,7 @@ hr {
     display: block;
     height: 1px;
     border: 0;
-    border-top: 1px solid #ccc;
+    border-top: 1px solid $palette-light-gray;
     margin: 1em 0;
     padding: 0;
 }
@@ -81,33 +99,85 @@ textarea {
 }
 
 /* ==========================================================================
-   Browser Upgrade Prompt
-   ========================================================================== */
-
-.browserupgrade {
-    margin: 0.2em 0;
-    background: #ccc;
-    color: #000;
-    padding: 0.2em 0;
-}
-
-/* ==========================================================================
    Author's custom styles
    ========================================================================== */
 
+body {
+    width: 100%;
+    height: 100%;
+}
 
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Audiowide', cursive;
+}
 
+a {
+    color: $palette-green;
+}
 
+#page-wrapper {
+    width: $left-column-width + $right-column-width;
+    margin: 0 auto;
+    overflow: auto;
+}
 
+#header {
+    h1 {
+        font-size: 2.5em;
+        width: 10em;
+        float: left;
+    }
+    padding-left: 1em;
+}
 
+.block {
+    height: 25px;
+    width: 25px;
+    margin: 42.5px 5px;
+    float: right;
+    border-radius: 1px;
+}
 
+.font-black {
+    color: $palette-black;
+}
 
+.font-green {
+    color: $palette-green;
+}
 
+.b2 {
+    background-color: $palette-black;
+}
 
+.b1 {
+    background-color: $palette-green;
+}
 
+#content-wrapper {
+    margin: 1em 0em;
+    clear: both;
+}
 
+#left-column {
+    width: $left-column-width;
+    float: left;
+    padding-top: 10px;
+}
 
+#right-column {
+    width: $right-column-width;
+    float: right;
+    margin-bottom: 5em;
+}
 
+#footer {
+    padding-bottom: 2em;
+    clear: both;
+    text-align: right;
+    font-size: 60%;
+    font-style: italic;
+}
 
 
 

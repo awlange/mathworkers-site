@@ -1,0 +1,70 @@
+{% extends "layout.html" %}
+{% block body %}
+    <h2>About</h2>
+    <p>
+        MathWorkersJS is a parallel JavaScript math library built around HTML5 web workers.
+    </p>
+    <p>
+        MathWorkersJS can speed up the performance of in-browser/client-side computations
+        on computers with multi-core processors. It does so by distributing the computational
+        burden across a pool of web workers so that the computation can execute in parallel.
+    </p>
+
+    <h2>Basic Examples</h2>
+    <p>
+        MathWorkersJS supports both serial and parallel linear algebra computations
+        via special Vector and Matrix classes with an easy to use syntax. Also, MathWorkersJS features
+        a familiar event emitter style to handle synchronization in parallel computations.
+    </p>
+    <p>
+        Here is a simple example of a serial vector dot product:
+    </p>
+    <pre><code class="language-javascript">var v = MathWorkers.Vector.fromArray([1, 2, 3, 4]);
+var w = MathWorkers.Vector.fromArray([5, 6, 7, 8]);
+var dot = v.dotVector(w);
+console.log(dot);</code></pre>
+    <p>
+        To perform the same vector dot product in parallel, MathWorkersJS requires two
+        separate code parts, the code for the workers and the code for the coordinator.
+        (For more details, see the <a href="/quickstart">Quick Start</a> guide.)
+    </p>
+    <p>
+        Coordinator code for launching 2 workers:
+    </p>
+    <pre><code class="language-javascript">// Initialize a Coordinator with 2 workers
+var coord = new MathWorkers.Coordinator(2, "work.js");
+
+// Begin the computation once the workers are ready
+coord.onReady(function() {
+	coord.trigger("compute");
+});
+
+// Obtain the resulting dot product
+coord.on("dot", function() {
+	var dot = crd.getBuffer();
+    console.log(dot);
+});</code></pre>
+    <p>
+        Worker code ("work.js"):
+    </p>
+    <pre><code class="language-javascript">// Load MathWorkersJS for this worker
+importScripts("mathworkers.js");
+var worker = new MathWorkers.MathWorker();
+
+// On the Coordinator trigger, compute the dot product in parallel
+worker.on("compute", function() {
+    var v = MathWorkers.Vector.fromArray([1, 2, 3, 4]);
+    var w = MathWorkers.Vector.fromArray([5, 6, 7, 8]);
+	v.workerDotVector(w, "dot");
+});</code></pre>
+    <p>
+        Still with me? Admittedly, there is a fair bit of boilerplate attached to a MathWorkersJS
+        parallel computation, but what you see above is the basic framework that much more complex
+        computations can be built upon!
+    </p>
+    <p>
+        To start diving deeper into MathWorkersJS and figure out how to unleash its power, head over to
+        the <a href="/quickstart">Quick Start</a> guide.
+    </p>
+
+{% endblock body %}
