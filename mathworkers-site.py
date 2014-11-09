@@ -16,5 +16,13 @@ def root():
 def quickstart():
     return render_template('quickstart.html')
 
+@app.route('/documentation')
+def documentation():
+    return render_template('documentation.html')
+
+@app.route('/performance')
+def performance():
+    return render_template('performance.html')
+
 if __name__ == '__main__':
     app.run()

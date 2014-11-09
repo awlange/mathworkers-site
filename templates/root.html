@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block body %}
-    <h2>About</h2>
+    <h2 id="about">About</h2>
     <p>
         MathWorkersJS is a parallel JavaScript math library built around HTML5 web workers.
     </p>
@@ -10,14 +10,29 @@
         burden across a pool of web workers so that the computation can execute in parallel.
     </p>
 
-    <h2>Basic Examples</h2>
+    <h2 id="features">Features</h2>
+    <ul>
+        <li>Vector and Matrix classes wrapping Float64Array objects</li>
+        <li>Serial and parallel implementations for common linear algebra operations</li>
+        <li>Coordinator-Worker parallelism paradigm with easy to use communication abstraction</li>
+        <li>Familiar event emitter style for handling synchronization</li>
+    </ul>
+
+    <h2 id="limitations">Limitations</h2>
+    <ul>
+        <li>Parallel methods are <em>not</em> guaranteed to always improve computation timings, as timings will depend
+            a great deal on data size, browser, operating system, computer hardware, and more.
+            However, more often than not, MathWorkersJS exhibits timing benefits on most modern systems.
+        </li>
+        <li>Currently only supports double precision floating point numbers. No integer methods.</li>
+        <li>Parallelism relies on web worker browser support. Naturally, MathWorkersJS will not work properly on
+            browsers that do no support web workers.</li>
+        <li>Node.js compatibility is not tested. To be considered more in the future.</li>
+    </ul>
+
+    <h2 id="basic_examples">Basic Examples</h2>
     <p>
-        MathWorkersJS supports both serial and parallel linear algebra computations
-        via special Vector and Matrix classes with an easy to use syntax. Also, MathWorkersJS features
-        a familiar event emitter style to handle synchronization in parallel computations.
-    </p>
-    <p>
-        Here is a simple example of a serial vector dot product:
+        Here is a simple example of a serial vector dot product in MathWorkersJS:
     </p>
     <pre><code class="language-javascript">var v = MathWorkers.Vector.fromArray([1, 2, 3, 4]);
 var w = MathWorkers.Vector.fromArray([5, 6, 7, 8]);
