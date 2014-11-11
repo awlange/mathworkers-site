@@ -76,7 +76,7 @@ body {
   height: 100%; }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Audiowide', cursive; }
+  font-family: "Audiowide", cursive; }
 
 a {
   color: #26a65b; }
@@ -92,13 +92,16 @@ a {
     font-size: 2.5em;
     width: 10em;
     float: left; }
+    #header h1 a {
+      text-decoration: none;
+      color: #22313f; }
 
 .block {
   height: 25px;
   width: 25px;
   margin: 42.5px 5px;
   float: right;
-  border-radius: 1px; }
+  border-radius: 3px; }
 
 .font-black {
   color: #22313f; }
@@ -132,6 +135,17 @@ a {
   text-align: right;
   font-size: 60%;
   font-style: italic; }
+
+a #download-button {
+  margin: 25px auto;
+  padding: 10px;
+  font-family: "Audiowide", cursive;
+  text-align: center;
+  width: 50%;
+  border-radius: 3px;
+  color: #22313f;
+  background-color: #26a65b;
+  text-decoration: none; }
 
 /* ==========================================================================
    Helper classes

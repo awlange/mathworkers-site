@@ -21,6 +21,8 @@ $palette-green: #26A65B;
 $left-column-width: 15em;
 $right-column-width: 45em;
 
+$font-audiowide: 'Audiowide', cursive;
+
 /* ==========================================================================
    Base styles: opinionated defaults
    ========================================================================== */
@@ -108,7 +110,7 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-    font-family: 'Audiowide', cursive;
+    font-family: $font-audiowide;
 }
 
 a {
@@ -126,6 +128,10 @@ a {
         font-size: 2.5em;
         width: 10em;
         float: left;
+        a {
+            text-decoration: none;
+            color: $palette-black;
+        }
     }
     padding-left: 1em;
 }
@@ -135,7 +141,7 @@ a {
     width: 25px;
     margin: 42.5px 5px;
     float: right;
-    border-radius: 1px;
+    border-radius: 3px;
 }
 
 .font-black {
@@ -179,6 +185,17 @@ a {
     font-style: italic;
 }
 
+a #download-button {
+    margin: 25px auto;
+    padding: 10px;
+    font-family: $font-audiowide;
+    text-align: center;
+    width: 50%;
+    border-radius: 3px;
+    color: $palette-black;
+    background-color: $palette-green;
+    text-decoration: none;
+}
 
 
 /* ==========================================================================
