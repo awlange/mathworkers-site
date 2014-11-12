@@ -6,5 +6,68 @@
             Once MathWorkersJS gets some more packages implemented, I will provide documentation on them individually.
             But, for now, please use the <a href="static/doc/index.html">JSDocs for the API</a>.
         </p>
+
+        <h2>Parallelism paradigm</h2>
+        <p>
+            MathWorkersJS uses a Coordinator-Worker paradigm for parallelism, which HTML5 Web Workers lends itself
+            to naturally.
+        </p>
+        <p>
+            As the name implies, a Coordinator is responsible for controlling a pool of Workers.
+            The Coordinator communicates with the Workers via message passing, and it can collectively
+            send data to and trigger events for the pool of Workers. Normally, one should create a Coordinator within
+            the JavaScript of an HTML &lt;script&gt;&lt;/script&gt; tag embedded in a web page.
+        </p>
+        <p>
+            On creation of a Coordinator, MathWorkersJS initializes a Worker pool of a specified size. A Worker
+            in MathWorkersJS is (surprise!) called a MathWorker. We will refer to Workers and MathWorkers
+            interchangeably from here forward. The set of MathWorkers in a Coordinator's pool all import and
+            execute the same JavaScript code, which is to be provided as a separate external file from the HTML web
+            page in which the Coordinator has been initialized. In other words, the code for one MathWorker is the
+            code for all MathWorkers in the same pool.
+        </p>
+        <p>
+            <strong>This is a very important feature!</strong>
+        </p>
+        <p>
+            Because the MathWorker code is executed by all members of the pool, that means each Worker will generate
+            redundant copies of data in memory. For example, in a pool of four MathWorkers, if a Vector object is
+            instantiated on one MathWorker, it is also instantiated on the other three (in parallel).
+            That may seem odd, but it is okay! I promise. The issue is that Web
+            Workers does not allow shared memory between Workers. So, as a compromise, MathWorkersJS embraces the
+            data redundancy as a straightforward way to ensure certain data is available to each MathWorker. Future
+            versions of MathWorkersJS will consider ways to offer options for memory optimizations.
+        </p>
+        <p>
+            You may be asking yourself: if the data is redundant, how is MathWorkersJS doing anything parallel?
+            The answer is that MathWorkersJS provides a unique ID for each MathWorker in a pool, which is used by
+            MathWorkersJS's internal load balancer to determine what part of the data each MathWorker is responsible
+            for working on in a computation. The computation may then proceed in parallel (assuming the computer
+            system has a multi-core processor). The actual parallel execution of CPU work is handled by the browser
+            and/or operating system. Thus, the performance of MathWorkersJS is greatly dependent on the combination
+            of browser, operating system, and computer hardware (other things not listed here could contribute too).
+        </p>
+        <p>
+            Okay, we have now established that the MathWorker pool works on redundant data in parallel. The next thing
+            to consider is synchronization. MathWorkersJS uses an event emitter style to handle synchronization. As
+            we mentioned above, the Coordinator is capable of triggering events on the MathWorkers. The reverse also
+            occurs, where the pool of MathWorkers emits events for to the Coordinator. Each event in
+            MathWorkersJS should have a unique <em>tag</em> attached to them. Then, one sets up event listeners on the
+            MathWorkers and Coordinator for those tags, providing synchronization. This should be a familiar concept
+            to most JavaScript programmers. See the <a href="/quickstart">Quick Start</a> for examples.
+        </p>
+        <p>
+            It is also worth pointing out that the MathWorkersJS programmer is not restricted to using only one
+            Coordinator-Worker pool per web page. Multiple co-existing Coordinator-Worker pools can be created.
+            However, a computation started by a Coordinator trigger will only be executed by the
+            MathWorkers belonging to the pool of that triggering Coordinator. Each pool would represent a separate
+            execution space. But, that's also where things could get pretty interesting. It is entirely possible
+            for a programmer to have two pools executing concurrently, each pool doing different work. Of course,
+            the usefulness of taking such an approach will most likely be limited by the number of processors
+            available and/or if an application can split computation into concurrent parts. Finally, it may
+            also be possible to generate Coordinator-Worker pool trees by having MathWorkers create their own
+            Coordinators with a set of MathWorkers one level down the tree. This capability has not been tested
+            yet but also offers some intriguing possibilities for mixing concurrency and parallelism.
+        </p>
     </article>
 {% endblock body %}

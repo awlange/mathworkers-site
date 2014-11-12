@@ -2,7 +2,58 @@
 {% block body %}
     <article>
         <h2>Quick Start</h2>
-        <p>In this guide, we'll go through writing the code to perform a simple matrix-vector product in parallel.</p>
-        <p>To do.</p>
+        <p>
+            In this guide, we'll go through writing the code to perform a simple matrix-vector product
+            in parallel with MathWorkersJS.
+        </p>
+
+
+        <h3>Part 1</h3>
+        <p>Let's get started by writing a super simple HTML web page that displays "hello world":</p>
+<pre><code class="language-markup">&lt;!doctype html&gt;
+&lt;html&gt;
+    &lt;p id=&quot;text&quot;&gt;hello world&lt;/p&gt;
+&lt;/html&gt;
+</code></pre>
+        <a href="static/examples/quickstart/quickstart_1.html">view page</a>
+
+        <p>Easy, right? Let's add a script tag that changes that message:</p>
+<pre><code class="language-markup">&lt;!doctype html&gt;
+&lt;html&gt;
+    &lt;p id=&quot;text&quot;&gt;hello world&lt;/p&gt;
+
+    &lt;script&gt;
+        var x = 1 + 2;
+        document.getElementById(&quot;text&quot;).innerHTML = x;
+    &lt;/script&gt;
+&lt;/html&gt;
+</code></pre>
+        <a href="static/examples/quickstart/quickstart_2.html">view page</a>
+
+        <p>
+            Okay, now we can add in MathWorkersJS. Here, I am just loading the minified verion of MathWorkersJS that
+            is available on this site. You should, of course, host your own copy of MathWorkersJS for your site,
+            and change the src value in the code below correspondingly. We'll make a little Vector object now
+            and print it to the screen:
+        </p>
+<pre><code class="language-markup">&lt;!doctype html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;script src=&quot;/static/js/mathworkers.min.js&quot;&gt;&lt;/script&gt;
+    &lt;/head&gt;
+
+    &lt;body&gt;
+        &lt;p id=&quot;text&quot;&gt;hello world&lt;/p&gt;
+    &lt;/body&gt;
+
+    &lt;script&gt;
+        var v = MathWorkers.Vector.fromArray([1, 2, 3, 4]);
+        document.getElementById(&quot;text&quot;).innerHTML = v.toString();
+    &lt;/script&gt;
+&lt;/html&gt;
+</code></pre>
+        <a href="static/examples/quickstart/quickstart_3.html">view page</a>
+
+
     </article>
 {% endblock body %}

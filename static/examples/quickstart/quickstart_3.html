@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+    <head>
+        <script src="/static/js/mathworkers.min.js"></script>
+    </head>
+
+    <body>
+        <p id="text">hello world</p>
+    </body>
+
+    <script>
+        var v = MathWorkers.Vector.fromArray([1, 2, 3, 4]);
+        document.getElementById("text").innerHTML = v.toString();
+    </script>
+</html>
