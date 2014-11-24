@@ -7,18 +7,19 @@
             in parallel with MathWorkersJS.
         </p>
 
-
-        <h3>Part 1</h3>
+        <!-- Part 1 -->
+        <h3 id="part1">Part 1: The scaffolding</h3>
         <p>Let's get started by writing a super simple HTML web page that displays "hello world":</p>
-<pre><code class="language-markup">&lt;!doctype html&gt;
+<pre><code class="language-markup">&lt;!DOCTYPE html&gt;
 &lt;html&gt;
     &lt;p id=&quot;text&quot;&gt;hello world&lt;/p&gt;
 &lt;/html&gt;
 </code></pre>
         <a href="static/examples/quickstart/quickstart_1.html">view page</a>
 
-        <p>Easy, right? Let's add a script tag that changes that message:</p>
-<pre><code class="language-markup">&lt;!doctype html&gt;
+
+        <p>Easy, right? Let's add some JavaScript that changes the displayed message:</p>
+<pre><code class="language-markup">&lt;!DOCTYPE html&gt;
 &lt;html&gt;
     &lt;p id=&quot;text&quot;&gt;hello world&lt;/p&gt;
 
@@ -30,13 +31,16 @@
 </code></pre>
         <a href="static/examples/quickstart/quickstart_2.html">view page</a>
 
+
         <p>
             Okay, now we can add in MathWorkersJS. Here, I am just loading the minified verion of MathWorkersJS that
             is available on this site. You should, of course, host your own copy of MathWorkersJS for your site,
-            and change the src value in the code below correspondingly. We'll make a little Vector object now
-            and print it to the screen:
+            and change the src value in the code below correspondingly.
         </p>
-<pre><code class="language-markup">&lt;!doctype html&gt;
+        <p>
+            Let's make a Vector object now and print it to the screen:
+        </p>
+<pre><code class="language-markup">&lt;!DOCTYPE html&gt;
 &lt;html&gt;
     &lt;head&gt;
         &lt;script src=&quot;/static/js/mathworkers.min.js&quot;&gt;&lt;/script&gt;
@@ -53,6 +57,181 @@
 &lt;/html&gt;
 </code></pre>
         <a href="static/examples/quickstart/quickstart_3.html">view page</a>
+
+
+        <!-- Part 2 -->
+        <h3 id="part2">Part 2: The matrix-vector product in serial</h3>
+        <p>
+            Great! Now, let's do some actual math. We'll create a Matrix object and then
+            call the Matrix method to compute its product with the Vector object.
+            Then, we'll print the resulting Vector to the screen.
+        </p>
+
+<pre><code class="language-markup">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;script src=&quot;/static/js/mathworkers.min.js&quot;&gt;&lt;/script&gt;
+    &lt;/head&gt;
+
+    &lt;body&gt;
+        &lt;p id=&quot;text&quot;&gt;hello world&lt;/p&gt;
+    &lt;/body&gt;
+
+    &lt;script&gt;
+        var v = MathWorkers.Vector.fromArray([1, 2, 3, 4]);
+        var A = MathWorkers.Matrix.fromArray([
+            [11, 12, 13, 14],
+            [21, 22, 23, 24],
+            [31, 32, 33, 34],
+            [41, 42, 43, 44]
+        ]);
+        var w = A.dotVector(v);
+        document.getElementById(&quot;text&quot;).innerHTML = w.toString();
+    &lt;/script&gt;
+&lt;/html&gt;</code></pre>
+        <a href="static/examples/quickstart/quickstart_4.html">view page</a>
+        <p>
+            How about that? You've got a matrix-vector product working! If we
+            only wanted to do serial computations, then we could stop here.
+            But, we'd be missing out on the fun parallelism of MathWorkersJS.
+            We'll get to that in the next part.
+        </p>
+
+
+        <!-- Part 3 -->
+        <h3 id="part3">Part 3: The matrix-vector product in parallel</h3>
+        <p>
+            Okay, we now have to adjust our HTML and JavaScript scaffolding.
+            We need to write two JavaScript code components: the code for the Coordinator
+            and the code for the MathWorkers. Let's do the Coordinator code first since
+            it will mostly reuse our scaffolding code above.
+        </p>
+        <p>
+            For the Coordinator code, we have to rewrite the script tag. We'll do it in pieces here.
+        </p>
+        <p>
+            The first piece is to create a Coordinator object. There are two required arguments for
+            the constructor of a Coordinator, which are 1) the number of MathWorkers you want the
+            Coordinator to launch and to coordinate and 2) the location of the script you want the
+            MathWorkers to execute. Here's the code for doing so in our example:
+        </p>
+<pre><code class="language-javascript">var coord = new MathWorkers.Coordinator(1, &quot;quickstart_5_worker.js&quot;);</code></pre>
+        <p>
+            This creates our Coordinator object with one MathWorker. Upon creation, the Coordinator
+            creates the pool of MathWorkers (here just the one in the pool). When that happens,
+            the MathWorkers parse their code and will emit a signal to the Coordinator that they are
+            ready to accept event triggers.
+        </p>
+        <p>
+            So, the next piece we will have the Coordinator do is to listen for the ready signal from the
+            MathWorker pool. When it receives this signal, it will execute a provided callback function:
+        </p>
+<pre><code class="language-javascript">coord.onReady(function() {
+    coord.trigger(&quot;run&quot;);
+});</code></pre>
+        <p>
+            Here, we decided to make the Coordinator trigger an event tagged "run" in the callback.
+            This will cause the MathWorker pool to execute the event it has registered under the tag "run".
+            We will go into this shortly below when we go over the MathWorker code component. For now,
+            just hang on.
+        </p>
+
+        <p>
+            The last piece of the Coordinator code we are writing will be to have it register an event listener
+            for a message tagged as "done" from the MathWorker pool. On this event, a provided callback
+            will be executed:
+        </p>
+<pre><code class="language-javascript">coord.on(&quot;done&quot;, function() {
+    // Grab the message from the Coordinator buffer and write it to the screen
+    var messageList = coord.getMessageDataList();
+    document.getElementById(&quot;text&quot;).innerHTML = messageList[0];
+});</code></pre>
+        <p>
+            The callback here grabs a message from the Coordinator's buffer and prints that
+            message on the screen similar to how we were in the examples above.
+        </p>
+
+        <p>
+            Putting together all of the pieces for the Coordinator code above, we have the following:
+        </p>
+<pre><code class="language-markup">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;script src=&quot;/static/js/mathworkers.min.js&quot;&gt;&lt;/script&gt;
+    &lt;/head&gt;
+
+    &lt;body&gt;
+        &lt;p id=&quot;text&quot;&gt;hello world&lt;/p&gt;
+    &lt;/body&gt;
+
+    &lt;script&gt;
+        // Create the Coordinator with one MathWorker
+        var coord = new MathWorkers.Coordinator(1, &quot;quickstart_5_worker.js&quot;);
+
+        // Once the MathWorker is ready, tell it to start the function tagged with &quot;run&quot;
+        coord.onReady(function() {
+            coord.trigger(&quot;run&quot;);
+        });
+
+        // Register an event listener for a message from the MathWorker tagged &quot;done&quot;
+        coord.on(&quot;done&quot;, function() {
+            // Grab the message from the Coordinator buffer and write it to the screen
+            var messageList = coord.getMessageDataList();
+            document.getElementById(&quot;text&quot;).innerHTML = messageList[0];
+        });
+    &lt;/script&gt;
+&lt;/html&gt;</code></pre>
+
+        <p>
+            Before we view this page, though, let's go write the MathWorker component. This will be the
+            code in the file that we passed as the second argument in the Coordinator constructor.
+        </p>
+
+        <p>
+            The first piece of the MathWorker code will be to import the MathWorkersJS library and
+            also create a MathWorker object:
+        </p>
+<pre><code class="language-javascript">importScripts("/static/js/mathworkers.min.js");
+var worker = new MathWorkers.MathWorker();
+</code></pre>
+
+        <p>
+            The second (and last) piece is to register the "run" event listener. Recall that we wrote the code
+            so that the Coordinator will trigger this event upon receiving the ready signal from the MathWorker pool.
+            The event listener is registered with the MathWorker like so:
+        </p>
+<pre><code class="language-javascript">worker.on("run", function() {
+    var message = "Hello from MathWorker " + worker.getId();
+    worker.sendDataToCoordinator(message, "done");
+});</code></pre>
+        <p>
+            When the "run" event is triggered, the MathWorker executes the provided callback, which here
+            generates a message with the ID of this MathWorker. The MathWorker then sends this message
+            to the Coordinator as an event tagged as "done". In our Coordinator code component above,
+            we have the Coordinator listening for the "done" event, to which it reacts by writing the message
+            to the screen via replacing the inner HTML for a tag.
+        </p>
+        <p>
+            So, altogether, this is what the MathWorker component code looks like:
+        </p>
+<pre><code class="language-javascript">importScripts("/static/js/mathworkers.min.js");
+var worker = new MathWorkers.MathWorker();
+
+worker.on("run", function() {
+    var message = "Hello from MathWorker " + worker.getId();
+    worker.sendDataToCoordinator(message, "done");
+});</code></pre>
+
+        <p>
+            Okay, we've got the code for both the Coordinator and MathWorker components.
+            Let's go ahead and <a href="static/examples/quickstart/quickstart_5.html">view the page now</a>.
+        </p>
+        <p>
+            You should see "Hello from MathWorker 0". Yes? Great! It works!
+        </p>
+
+
+
 
 
     </article>
