@@ -317,6 +317,80 @@ worker.on(&quot;run&quot;, function() {
             We did it! That's a parallel matrix-vector product with MathWorkersJS.
         </p>
 
+        
+        <!-- Part 5 -->
+        <h3 id="part5">Part 5: Performance on a bigger parallel matrix-vector product</h3>
+        <p>
+            I know you might be thinking that the above example was a bit too simple. I agree.
+            It doesn't really show off the power of MathWorkersJS.
+            But, we have to start somewhere, of course.
+            So, let's go bigger. Let's see what MathWorkersJS can do.
+            We want a computation that requires a fair amount of time, enough so that it
+            should be obvious if the parallelism is working. We'll just generate a big
+            random Matrix and Vector and see what happens.
+        </p>
+        <p>
+            Here's the code for the MathWorkers:
+        </p>
+<pre><code class="language-javascript">importScripts("/static/js/mathworkers.min.js");
+var worker = new MathWorkers.MathWorker();
+
+worker.on("run", function() {
+    var v = MathWorkers.Vector.randomVector(500);
+    var A = MathWorkers.Matrix.randomMatrix(500, 500);
+    A.workerDotVector(v, "done");
+});</code></pre>
+        <p>
+            And here's the code for the Coordinator (and web page):
+        </p>
+<pre><code class="language-markup">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;script src=&quot;/static/js/mathworkers.min.js&quot;&gt;&lt;/script&gt;
+    &lt;/head&gt;
+
+    &lt;body&gt;
+        &lt;p id=&quot;text&quot;&gt;hello world&lt;/p&gt;
+    &lt;/body&gt;
+
+    &lt;script&gt;
+        // Create the Coordinator with some MathWorkers
+        var nWorkers = 2;
+        var coord = new MathWorkers.Coordinator(nWorkers, &quot;quickstart_7_worker.js&quot;);
+
+        // Once the MathWorker is ready, tell it to start the function tagged with &quot;run&quot;
+        var clockStart;
+        coord.onReady(function() {
+            // Start the clock
+            clockStart = window.performance.now();
+            coord.trigger(&quot;run&quot;);
+        });
+
+        // Register an event listener for a message from the MathWorker tagged &quot;done&quot;
+        coord.on(&quot;done&quot;, function() {
+            // Grab the message from the Coordinator buffer
+            var w = coord.getBuffer();
+
+            // Stop the clock
+            var clockStop = window.performance.now();
+
+            // Write the time of the computation to the page
+            var computeTime = clockStop - clockStart;
+            document.getElementById(&quot;text&quot;).innerHTML = &quot;Time for computation (milliseconds): &quot; + computeTime.toFixed(2);
+        });
+    &lt;/script&gt;
+&lt;/html&gt;</code></pre>
+    <p>
+        The above code has the size of the MathWorker pool hard-coded at 2 for simplicity. Now, to see
+        the benefit of adding more workers, we'll want to compare running with 1, 2, and maybe more workers.
+        Below are links for 1-4 workers for comparison of timings:
+    </p>
+    <ul>
+        <li><a href="static/examples/quickstart/quickstart_7_1.html">1 worker</a></li>
+        <li><a href="static/examples/quickstart/quickstart_7_2.html">2 workers</a></li>
+        <li><a href="static/examples/quickstart/quickstart_7_3.html">3 workers</a></li>
+        <li><a href="static/examples/quickstart/quickstart_7_4.html">4 workers</a></li>
+    </ul>
 
 
     </article>
