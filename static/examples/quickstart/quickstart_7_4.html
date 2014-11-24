@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="/static/js/mathworkers.min.js"></script>
+    </head>
+
+    <body>
+        <p id="text">hello world</p>
+    </body>
+
+    <script>
+        // Create the Coordinator with some MathWorkers
+        var nWorkers = 4;
+        var coord = new MathWorkers.Coordinator(nWorkers, "quickstart_7_worker.js");
+
+        // Once the MathWorker is ready, tell it to start the function tagged with "run"
+        var clockStart;
+        coord.onReady(function() {
+            // Start the clock
+            clockStart = window.performance.now();
+            coord.trigger("run");
+        });
+
+        // Register an event listener for a message from the MathWorker tagged "done"
+        coord.on("done", function() {
+            // Grab the message from the Coordinator buffer
+            var w = coord.getBuffer();
+
+            // Stop the clock
+            var clockStop = window.performance.now();
+
+            // Write the time of the computation to the page
+            var computeTime = clockStop - clockStart;
+            document.getElementById("text").innerHTML = "Time for computation (milliseconds): " + computeTime.toFixed(2);
+        });
+    </script>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="/static/js/mathworkers.min.js"></script>
+    </head>
+
+    <body>
+        <p id="text">hello world</p>
+    </body>
+
+    <script>
+        // Create the Coordinator with two MathWorkers
+        var coord = new MathWorkers.Coordinator(2, "quickstart_6_worker.js");
+
+        // Once the MathWorker is ready, tell it to start the function tagged with "run"
+        coord.onReady(function() {
+            coord.trigger("run");
+        });
+
+        // Register an event listener for a message from the MathWorker tagged "done"
+        coord.on("done", function() {
+            // Grab the message from the Coordinator buffer and write it to the screen
+            var w = coord.getBuffer();
+            document.getElementById("text").innerHTML = w.toString();
+        });
+    </script>
+</html>

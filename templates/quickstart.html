@@ -7,6 +7,15 @@
             in parallel with MathWorkersJS.
         </p>
 
+        <!-- Listing -->
+        <ul>
+            <li><a href="#part1">Part 1: The scaffolding</a></li>
+            <li><a href="#part2">Part 2: The matrix-vector product in serial</a></li>
+            <li><a href="#part3">Part 3: The parallel scaffolding</a></li>
+            <li><a href="#part4">Part 4: The matrix-vector product in parallel</a></li>
+            <li><a href="#part5">Part 5: Performance on a bigger parallel matrix-vector product</a></li>
+        </ul>
+
         <!-- Part 1 -->
         <h3 id="part1">Part 1: The scaffolding</h3>
         <p>Let's get started by writing a super simple HTML web page that displays "hello world":</p>
@@ -99,7 +108,7 @@
 
 
         <!-- Part 3 -->
-        <h3 id="part3">Part 3: The matrix-vector product in parallel</h3>
+        <h3 id="part3">Part 3: The parallel scaffolding</h3>
         <p>
             Okay, we now have to adjust our HTML and JavaScript scaffolding.
             We need to write two JavaScript code components: the code for the Coordinator
@@ -231,6 +240,82 @@ worker.on("run", function() {
         </p>
 
 
+        <!-- Part 4 -->
+        <h3 id="part4">Part 4: The matrix-vector product in parallel</h3>
+        <p>
+            So, we've got the scaffolding for a parallel computation with MathWorkersJS. Let's do
+            some computing in parallel then, eh?
+            What we'll do is the very same matrix-vector product as in Part 2, but we'll do it in
+            parallel with 2 MathWorkers.
+        </p>
+        <p>
+            Let's start with the MathWorker component code this time:
+        </p>
+<pre><code class="language-javascript">importScripts(&quot;/static/js/mathworkers.min.js&quot;);
+var worker = new MathWorkers.MathWorker();
+
+worker.on(&quot;run&quot;, function() {
+    var v = MathWorkers.Vector.fromArray([1, 2, 3, 4]);
+    var A = MathWorkers.Matrix.fromArray([
+        [11, 12, 13, 14],
+        [21, 22, 23, 24],
+        [31, 32, 33, 34],
+        [41, 42, 43, 44]
+    ]);
+    A.workerDotVector(v, "done");
+});</code></pre>
+        <p>
+            Like in Part 3, we register an event listener called "run", which we will have the
+            Coordinator trigger. In the callback, we build the same Vector and Matrix objects as we did
+            in Part 2.
+        </p>
+        <p>
+            The important difference here is that we call the <em>workerDotVector</em> method
+            on Matrix A. The methods prefixed with <em>worker</em> in MathWorkerJS are intended to be executed
+            in the MathWorker code. These methods are designed to run in parallel. Once their computation
+            completes, they trigger an event with the tag provided in their arguments. Above, we use
+            the tag "done". Once the MathWorker pool completes the matrix-vector product, the "done"
+            event will be triggered on the Coordinator.
+        </p>
+        <p>
+            This brings us to the Coordinator component code:
+        </p>
+<pre><code class="language-markup">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;script src=&quot;/static/js/mathworkers.min.js&quot;&gt;&lt;/script&gt;
+    &lt;/head&gt;
+
+    &lt;body&gt;
+        &lt;p id=&quot;text&quot;&gt;hello world&lt;/p&gt;
+    &lt;/body&gt;
+
+    &lt;script&gt;
+        // Create the Coordinator with two MathWorkers
+        var coord = new MathWorkers.Coordinator(2, &quot;quickstart_6_worker.js&quot;);
+
+        // Once the MathWorker is ready, tell it to start the function tagged with &quot;run&quot;
+        coord.onReady(function() {
+            coord.trigger(&quot;run&quot;);
+        });
+
+        // Register an event listener for a message from the MathWorker tagged &quot;done&quot;
+        coord.on(&quot;done&quot;, function() {
+            // Grab the message from the Coordinator buffer and write it to the screen
+            var w = coord.getBuffer();
+            document.getElementById(&quot;text&quot;).innerHTML = w.toString();
+        });
+    &lt;/script&gt;
+&lt;/html&gt;</code></pre>
+        <p>
+            Ready for this? Go ahead and
+            <a href="static/examples/quickstart/quickstart_6.html">view the page</a>.
+            It's the same as the serial computation, but it happened in parallel!
+            Cool, right?
+        </p>
+        <p>
+            We did it! That's a parallel matrix-vector product with MathWorkersJS.
+        </p>
 
 
 
