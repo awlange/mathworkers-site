@@ -1,9 +1,9 @@
 """
-The back-end app for http://mathworkersjs.org
+The back-end app for http://www.mathworkersjs.org
 """
 __author__ = 'alange'
 
-from flask import Flask, render_template
+from flask import Flask, render_template, send_from_directory
 
 app = Flask(__name__)
 app.config.from_object(__name__)
