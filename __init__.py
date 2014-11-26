@@ -3,7 +3,7 @@ The back-end app for http://www.mathworkersjs.org
 """
 __author__ = 'alange'
 
-from flask import Flask, render_template, send_from_directory
+from flask import Flask, render_template
 
 app = Flask(__name__)
 app.config.from_object(__name__)

@@ -1,8 +1,10 @@
 importScripts("/static/js/mathworkers.min.js");
 var worker = new MathWorkers.MathWorker();
 
+var n = 2000;
+var v = MathWorkers.Vector.randomVector(n);
+var A = MathWorkers.Matrix.randomMatrix(n, n);
+
 worker.on("run", function() {
-    var v = MathWorkers.Vector.randomVector(2000);
-    var A = MathWorkers.Matrix.randomMatrix(2000, 2000);
     A.workerDotVector(v, "done");
 });
