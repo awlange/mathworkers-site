@@ -33,8 +33,13 @@
             } else {
                 // Done looping
                 var computeTime = window.performance.now() - clockStart;
-                document.getElementById("text").innerHTML = "Time for computation (milliseconds): "
+                document.getElementById("text").innerHTML = "Total time for computation (milliseconds): "
                         + computeTime.toFixed(2);
+
+                var pMean = document.createElement("p");
+                pMean.appendChild(document.createTextNode("Mean time for computation (milliseconds): "
+                        + (computeTime / nRuns).toFixed(2)));
+                document.getElementById("text").parentNode.appendChild(pMean);
             }
         });
     </script>

@@ -76,13 +76,13 @@ body {
   height: 100%; }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: "Audiowide", cursive; }
+  font-family: "Audiowide", sans-serif; }
 
 a {
   color: #26a65b; }
 
 #page-wrapper {
-  width: 60em;
+  width: 65em;
   margin: 0 auto;
   overflow: auto; }
 
@@ -125,7 +125,7 @@ a {
   padding-top: 10px; }
 
 #right-column {
-  width: 45em;
+  width: 50em;
   float: right;
   margin-bottom: 5em; }
 
@@ -139,7 +139,7 @@ a {
 a #download-button {
   margin: 25px auto;
   padding: 10px;
-  font-family: "Audiowide", cursive;
+  font-family: "Audiowide", sans-serif;
   text-align: center;
   width: 50%;
   border-radius: 3px;
