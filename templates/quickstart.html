@@ -322,8 +322,8 @@ worker.on(&quot;run&quot;, function() {
         <h3 id="part5">Part 5: Performance on a bigger parallel matrix-vector product</h3>
         <p>
             I know you might be thinking that the above example was a bit too simple. I agree.
-            It doesn't really show off the power of MathWorkersJS.
-            But, we have to start somewhere, of course.
+            It doesn't really show off what MathWorkersJS can really do.
+            We have to start somewhere, of course.
             So, let's go bigger. Let's see what MathWorkersJS can do.
             We want a computation that requires a fair amount of time, enough so that it
             should be obvious if the parallelism is working. We'll just generate a big
@@ -335,9 +335,11 @@ worker.on(&quot;run&quot;, function() {
 <pre><code class="language-javascript">importScripts("/static/js/mathworkers.min.js");
 var worker = new MathWorkers.MathWorker();
 
+var n = 2000;
+var v = MathWorkers.Vector.randomVector(n);
+var A = MathWorkers.Matrix.randomMatrix(n, n);
+
 worker.on("run", function() {
-    var v = MathWorkers.Vector.randomVector(500);
-    var A = MathWorkers.Matrix.randomMatrix(500, 500);
     A.workerDotVector(v, "done");
 });</code></pre>
         <p>
@@ -350,7 +352,7 @@ worker.on("run", function() {
     &lt;/head&gt;
 
     &lt;body&gt;
-        &lt;p id=&quot;text&quot;&gt;hello world&lt;/p&gt;
+        &lt;p id=&quot;text&quot;&gt;computing...&lt;/p&gt;
     &lt;/body&gt;
 
     &lt;script&gt;
@@ -358,25 +360,34 @@ worker.on("run", function() {
         var nWorkers = 2;
         var coord = new MathWorkers.Coordinator(nWorkers, &quot;quickstart_7_worker.js&quot;);
 
-        // Once the MathWorker is ready, tell it to start the function tagged with &quot;run&quot;
+        var nRuns = 100;
+        var iRun = 0;
+
         var clockStart;
         coord.onReady(function() {
-            // Start the clock
             clockStart = window.performance.now();
             coord.trigger(&quot;run&quot;);
         });
 
-        // Register an event listener for a message from the MathWorker tagged &quot;done&quot;
         coord.on(&quot;done&quot;, function() {
-            // Grab the message from the Coordinator buffer
             var w = coord.getBuffer();
 
-            // Stop the clock
-            var clockStop = window.performance.now();
+            // Loop
+            ++iRun;
+            if (iRun &lt; nRuns) {
+                // Continue looping
+                coord.trigger(&quot;run&quot;);
+            } else {
+                // Done looping
+                var computeTime = window.performance.now() - clockStart;
+                document.getElementById(&quot;text&quot;).innerHTML = &quot;Total time for computation (milliseconds): &quot;
+                        + computeTime.toFixed(2);
 
-            // Write the time of the computation to the page
-            var computeTime = clockStop - clockStart;
-            document.getElementById(&quot;text&quot;).innerHTML = &quot;Time for computation (milliseconds): &quot; + computeTime.toFixed(2);
+                var pMean = document.createElement(&quot;p&quot;);
+                pMean.appendChild(document.createTextNode(&quot;Mean time for computation (milliseconds): &quot;
+                        + (computeTime / nRuns).toFixed(2)));
+                document.getElementById(&quot;text&quot;).parentNode.appendChild(pMean);
+            }
         });
     &lt;/script&gt;
 &lt;/html&gt;</code></pre>
