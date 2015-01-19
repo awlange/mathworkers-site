@@ -12,6 +12,10 @@ app.config.from_object(__name__)
 def root():
     return render_template('root.html')
 
+@app.route('/download')
+def download():
+    return render_template('download.html')
+
 @app.route('/quickstart')
 def quickstart():
     return render_template('quickstart.html')

@@ -2,6 +2,21 @@
 {% block body %}
     <article>
         <h2>Performance</h2>
-        <p>To do.</p>
+        <p>More examples to come!</p>
+
+        <h3>Matrix-Vector Product</h3>
+        <p>
+            This is the example walked through in the <a href="/quickstart">Quick Start</a>,
+            which is a 2000 by 2000 Matrix multiplied by a Vector of length 2000. The operation
+            is repeated 100 times to minimize statistical fluctuation. With 4 workers, MathWorkersJS
+            tends to display about a 2-3x speedup relative to the single worker in this example.
+            Tests of this example on mobile device browsers seem to especially benefit!
+        </p>
+        <ul>
+            <li><a href="static/examples/quickstart/quickstart_7_1.html">1 worker</a></li>
+            <li><a href="static/examples/quickstart/quickstart_7_2.html">2 workers</a></li>
+            <li><a href="static/examples/quickstart/quickstart_7_3.html">3 workers</a></li>
+            <li><a href="static/examples/quickstart/quickstart_7_4.html">4 workers</a></li>
+        </ul>
     </article>
 {% endblock body %}

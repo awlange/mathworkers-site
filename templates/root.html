@@ -3,16 +3,21 @@
     <article>
         <h2 id="about">About</h2>
         <p>
-            MathWorkersJS is a parallel JavaScript math and statistics library built around HTML5 Web Workers.
+            MathWorkersJS is a parallel JavaScript math and statistics library built around HTML5 Web Workers and the
+            Node.js cluster module.
         </p>
         <p>
             MathWorkersJS can speed up the performance of in-browser/client-side computations
             on computers with multi-core processors by distributing computational
-            load among a pool of web workers which execute in parallel.
+            load among a pool of workers which execute in parallel. On the client-side, MathWorkersJS parallelizes in
+            the browser via HTML5 <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API">Web Workers</a>.
+            On the server-side, MathWorkersJS parallelizes via the
+            <a href="http://nodejs.org/api/cluster.html">cluster module</a> in Node.js.
         </p>
 
         <h2 id="features">Features</h2>
         <ul>
+            <li>Runs client-side in browsers or server-side with Node.js</li>
             <li>Vector and Matrix classes wrapping Float64Array objects</li>
             <li>Serial and parallel implementations for common linear algebra operations</li>
             <li>Coordinator-Worker parallelism paradigm with easy to use communication abstraction</li>
@@ -21,14 +26,14 @@
 
         <h2 id="limitations">Limitations</h2>
         <ul>
-            <li>Parallel methods are <em>not</em> guaranteed to always improve computation timings, as timings will depend
-                a great deal on data size, browser, operating system, computer hardware, and more.
-                However, more often than not, MathWorkersJS exhibits timing benefits on most modern systems.
+            <li>MathWorkersJS exhibits timing benefits on most modern systems.
+                However, its parallel methods are <em>not</em> guaranteed to always improve computation timings,
+                as timings will depend a great deal on data size, browser, operating system, computer hardware, and more.
+                (This is something any good programmer should know about, of course!)
             </li>
             <li>Currently only supports double precision floating point numbers. No integer methods.</li>
-            <li>Parallelism relies on web worker browser support. Naturally, MathWorkersJS will not work properly on
-                browsers that do no support web workers.</li>
-            <li>Node.js compatibility is under development.</li>
+            <li>Parallelism in browsers relies on Web Worker support. Naturally, MathWorkersJS will not work properly on
+                browsers that do no support Web Workers.</li>
         </ul>
 
         <h2 id="basic_examples">Basic Examples</h2>
@@ -57,7 +62,7 @@ coord.onReady(function() {
 
 // Obtain the resulting dot product
 coord.on("dot", function() {
-	var dot = crd.getBuffer();
+	var dot = coord.getBuffer();
     console.log(dot);
 });</code></pre>
         <p>
